@@ -2,11 +2,35 @@ pipeline {
     agent any
 
     stages {
+        stage('Setup Virtual Environment') {
+            steps {
+                bat '''
+                echo Setting up the virtual environment
+                
+                REM Remove existing virtual environment if it exists
+                if exist mlip rmdir /S /Q mlip
+
+                REM Create a new virtual environment
+                python -m venv mlip
+
+                REM Activate the virtual environment
+                call mlip\\Scripts\\activate.bat
+
+                REM Upgrade pip (optional but recommended)
+                python -m pip install --upgrade pip
+
+                REM Install required packages
+                pip install pytest numpy pandas scikit-learn
+
+                REM Deactivate the virtual environment
+                call mlip\\Scripts\\deactivate.bat
+                '''
+            }
+        }
         stage('Build') {
             steps {
                 bat '''
-                echo In C or Java, we can compile our program in this step
-                echo In Python, we can build our package here or skip this step
+                echo Build step: Skipped for Python projects
                 '''
             }
         }
@@ -21,8 +45,8 @@ pipeline {
                 REM Run pytest
                 pytest
 
-                REM Comment out the exit 1 line after implementing Jenkinsfile
-                REM exit 1
+                REM Deactivate the virtual environment
+                call mlip\\Scripts\\deactivate.bat
                 '''
             }
         }
