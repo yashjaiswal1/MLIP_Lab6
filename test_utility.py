@@ -36,6 +36,26 @@ def feature_target_sample(housing_data_sample):
     return (feature_df, target_series)
 
 def test_data_split(feature_target_sample):
-    return_tuple = data_split(*feature_target_sample)
-    # TODO test if the length of return_tuple is 4
-    raise NotImplemented
+    # Unpack the features and target from the fixture
+    feature_df, target_series = feature_target_sample
+
+    # Call the data_split function
+    return_tuple = data_split(feature_df, target_series)
+
+    # Test if the length of return_tuple is 4
+    assert len(return_tuple) == 4
+
+    # Unpack the returned tuple
+    X_train, X_test, y_train, y_test = return_tuple
+
+    # Assert that the splits have the correct sizes
+    # Since the default test_size is 0.2 and we have only 2 samples,
+    # the test set will have 0 samples, so we need to handle this.
+    assert X_train.shape[0] + X_test.shape[0] == feature_df.shape[0]
+    assert y_train.shape[0] + y_test.shape[0] == target_series.shape[0]
+
+    # Ensure that training and testing sets are mutually exclusive
+    if not X_test.empty:
+        assert not X_train.equals(X_test)
+    if not y_test.empty:
+        assert not y_train.equals(y_test)
