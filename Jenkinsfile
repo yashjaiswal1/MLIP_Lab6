@@ -4,33 +4,34 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh '''#!/bin/bash
-                echo 'In C or Java, we can compile our program in this step'
-                echo 'In Python, we can build our package here or skip this step'
+                bat '''
+                echo In C or Java, we can compile our program in this step
+                echo In Python, we can build our package here or skip this step
                 '''
             }
         }
         stage('Test') {
             steps {
-                sh '''#!/bin/bash
-                echo 'Test Step: We run testing tool like pytest here'
+                bat '''
+                echo Test Step: We run testing tool like pytest here
 
-                # TODO fill out the path to conda here
-                # sudo /PATH/TO/CONDA init
+                REM Activate the virtual environment
+                call mlip\\Scripts\\activate.bat
 
-                # TODO Complete the command to run pytest
-                # sudo /PATH/TO/CONDA run -n <Envinronment Name> <Command you want to run>
+                REM Run pytest
+                pytest
 
-                echo 'pytest not runned'
-                exit 1 #comment this line after implementing Jenkinsfile
+                REM Comment out the exit 1 line after implementing Jenkinsfile
+                REM exit 1
                 '''
-
             }
         }
         stage('Deploy') {
             steps {
-                echo 'In this step, we deploy our porject'
-                echo 'Depending on the context, we may publish the project artifact or upload pickle files'
+                bat '''
+                echo In this step, we deploy our project
+                echo Depending on the context, we may publish the project artifact or upload pickle files
+                '''
             }
         }
     }
